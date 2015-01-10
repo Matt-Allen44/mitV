@@ -3,7 +3,10 @@ Lightweight WebApp used to view Commits to a Github Repository in Realtime!
 Developed using GO and the GITHUB API
 
 
-EXAMPLE TABLE	<style type="text/css">
+EXAMPLE TABLE	
+
+```
+	<style type="text/css">
 	.tg  {border-collapse:collapse;border-spacing:0;}
 	.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 20px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
 	.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 20px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
@@ -36,5 +39,5 @@ EXAMPLE TABLE	<style type="text/css">
 	    <td class="tg-zh8g">Insert description here</td>
 	  </tr>
 	</table>
-
+```
 
