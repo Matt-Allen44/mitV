@@ -68,8 +68,8 @@ func getTableHeader(repo string) string {
 	rowPadding := "8"
 	headPadding := "2"
 
-	colOdd := "#000000"
-	colEven := "#191919"
+	colEven := "#000000"
+	colOdd := "#191919"
 	colBg := "#191919"
 	colHead := "#000000"
 	colText := "#ffffff"
