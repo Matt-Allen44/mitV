@@ -2,6 +2,9 @@
 Lightweight WebApp used to view Commits to a Github Repository in Realtime!
 Developed using GO and the GITHUB API
 
+#Contributing
+Send a Pull Request if you wish to commit!
+
 
 EXAMPLE TABLE	
 
