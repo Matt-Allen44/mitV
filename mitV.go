@@ -11,6 +11,12 @@ import (
 )
 
 func main() {
+	if len(os.Args) == 4 {
+	} else {
+		fmt.Println("Incorrect args - check usage - go run MITV OAUTH_KEY REPO(/AUTHOR/NAME) HOST")
+		os.Exit(1)
+	}
+
 	go launchServer()
 
 	for true {
@@ -24,7 +30,7 @@ var pageContent string = ""
 
 func launchServer() {
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(os.Args[3], nil)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +73,7 @@ func update() {
 	s += (getTableFooter())
 	pageContent = s
 
-	writeFile("index.html", s)
+	//writeFile("index.html", s)
 }
 
 func writeFile(name string, contents string) {
