@@ -38,15 +38,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func update() {
-	fmt.Println("tick")
 
 	oauth := string(os.Args[1])
 	repo := string(os.Args[2])
 	wordLimit := 65
 
 	repo = strings.Replace(repo, "]", "", -1)
-
-	fmt.Println("Starting w/ ", oauth, " @ ", "https://api.github.com/repos/"+repo+"/commits")
 
 	s := (getTableHeader(repo))
 
@@ -67,7 +64,6 @@ func update() {
 		}
 
 		s += formatRow(i%2 == 0, strings.ToUpper(string(id)), strings.ToUpper(strings.Split(repo, "/")[1]), commitJSON[i].Commit.Committer.Date, commitJSON[i].Commit.Committer.Name, comment, commitJSON[i].HtmlUrl)
-		//	fmt.Println(commitJSON[i].Commit.Message)
 	}
 
 	s += (getTableFooter())
@@ -94,37 +90,41 @@ func getTableHeader(repo string) string {
 	colBg := "#191919"
 	colHead := "#000000"
 	colText := "#ffffff"
-	sizeHeader := "100%"
+	sizeHeader := "24x"
 
-	return `<html> <center> <title>mitV - ` + repo + `</title> 
-<body bgcolor = "` + colBg + `">
+	var drawHeader bool = false
 
-<h1 style="font-weight:normal;color:` + colText + `;background-color:` + colBg + `;letter-spacing:1pt;word-spacing:2pt;font-size:` + sizeHeader + `;text-align:center;font-family:lucida sans unicode, lucida grande, sans-serif;line-height:1;
-"> WATCHING COMMITS FOR ` + repo + ` </h1>
+	header := ""
+	if drawHeader {
+		header = `<h1 style="font-weight:normal;color:` + colText + `;background-color:` + colBg + `;letter-spacing:1pt;word-spacing:2pt;font-size:` + sizeHeader + `;text-align:center;font-family:lucida sans unicode, lucida grande, sans-serif;line-height:1;
+		"> WATCHING COMMITS FOR ` + strings.ToUpper(repo) + ` </h1>`
+	}
 
-<style>
-/* unvisited link */
-a:link {
-    color: #ffffff;
-}
+	return `<div class="page-wrap"> <html> <center> <title>mitV - ` + repo + `</title> 
+	<body bgcolor = "` + colBg + `">
 
-/* visited link */
-a:visited {
-    color: #ffffff;
-}
+	<style>
+	/* unvisited link */
+	a:link {
+	    color: #ffffff;
+	}
 
-/* mouse over link */
-a:hover {
-    color: #ffffff;
-}
+	/* visited link */
+	a:visited {
+	    color: #ffffff;
+	}
 
-/* selected link */
-a:active {
-    color: #ffffff;
-}
-</style>
+	/* mouse over link */
+	a:hover {
+	    color: #ffffff;
+	}
 
-<style type="text/css">
+	/* selected link */
+	a:active {
+	    color: #ffffff;
+	}
+	</style>
+	` + header + `<style type="text/css">
 	.tg  {border-collapse:collapse;border-spacing:0;}
 	.tg td{font-family:Arial, sans-serif;font-size:14px;padding:` + rowPadding + `px 20px;;overflow:hidden;word-break:normal;}
 	.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:` + headPadding + `px 20px;overflow:hidden;word-break:normal;}
@@ -160,18 +160,18 @@ func formatRow(even bool, changeId string, product string, time string, develope
 		class = "tg-zh8g"
 	}
 
-	s += "<td class=\"" + class + "\"> <a href=\"" + url + "\">" + changeId + "</a></td>"
-	s += "<td class=\"" + class + "\">" + product + "</td>"
-	s += "<td class=\"" + class + "\">" + time + "</td>"
-	s += "<td class=\"" + class + "\">" + developer + "</td>"
-	s += "<td class=\"" + class + "\"; width=\"50%\">" + description + "</td>"
+	s += "<td class=\"" + class + "\"> <a href=\"" + url + "\">" + changeId + "</a></td>\n"
+	s += "<td class=\"" + class + "\">" + product + "</td>\n"
+	s += "<td class=\"" + class + "\">" + time + "</td>\n"
+	s += "<td class=\"" + class + "\">" + developer + "</td>\n"
+	s += "<td class=\"" + class + "\"; width=\"100%\">" + description + "</td>\n"
 
-	s += "</tr>"
+	s += "</tr>\n"
 	return s
 }
 
 func getTableFooter() string {
-	return "</table>"
+	return `</table> \n<p style="font-weight:bold;text-transform:uppercase;color:#FFFFFF;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:center;font-family:arial, helvetica, sans-serif;line-height:1;">Powered by mitV - source at https://github.com/Matt-Allen44/mitV</p>`
 }
 
 var oauth string = ""
