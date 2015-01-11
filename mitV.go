@@ -162,16 +162,16 @@ func formatRow(even bool, changeId string, product string, time string, develope
 
 	s += "<td class=\"" + class + "\"> <a href=\"" + url + "\">" + changeId + "</a></td>\n"
 	s += "<td class=\"" + class + "\">" + product + "</td>\n"
-	s += "<td class=\"" + class + "\">" + time + "</td>\n"
-	s += "<td class=\"" + class + "\">" + developer + "</td>\n"
-	s += "<td class=\"" + class + "\"; width=\"100%\">" + description + "</td>\n"
+	s += "<td class=\"" + class + "\"; width=\"30%\">" + time + "</td>\n"
+	s += "<td class=\"" + class + "\"; width=\"20%\">" + developer + "</td>\n"
+	s += "<td class=\"" + class + "\"; width=\"60%\">" + description + "</td>\n"
 
-	s += "</tr>\n"
+	s += "</tr>"
 	return s
 }
 
 func getTableFooter() string {
-	return `</table> \n<p style="font-weight:bold;text-transform:uppercase;color:#FFFFFF;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:center;font-family:arial, helvetica, sans-serif;line-height:1;">Powered by mitV - source at https://github.com/Matt-Allen44/mitV</p>`
+	return `</table> <p style="font-weight:bold;text-transform:uppercase;color:#FFFFFF;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:center;font-family:arial, helvetica, sans-serif;line-height:1;">Powered by mitV - source at https://github.com/Matt-Allen44/mitV</p>`
 }
 
 var oauth string = ""
