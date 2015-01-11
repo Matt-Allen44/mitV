@@ -171,7 +171,7 @@ func formatRow(even bool, changeId string, product string, time string, develope
 }
 
 func getTableFooter() string {
-	return `</table> <p style="font-weight:bold;text-transform:uppercase;color:#FFFFFF;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:center;font-family:arial, helvetica, sans-serif;line-height:1;">Powered by mitV - source at https://github.com/Matt-Allen44/mitV</p>`
+	return `</table> <p style="font-weight:bold;text-transform:uppercase;color:#FFFFFF;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:center;font-family:arial, helvetica, sans-serif;line-height:1;">Powered by mitV - source at https://github.com/Matt-Allen44/mitV - ` + string(time.Now().UTC()) + `</p>`
 }
 
 var oauth string = ""
