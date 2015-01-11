@@ -11,11 +11,24 @@ import (
 )
 
 func main() {
+	go launchServer()
+
 	for true {
 		update()
 
 		time.Sleep(time.Second * 15)
 	}
+}
+
+var pageContent string = ""
+
+func launchServer() {
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", nil)
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, pageContent)
 }
 
 func update() {
@@ -52,6 +65,8 @@ func update() {
 	}
 
 	s += (getTableFooter())
+	pageContent = s
+
 	writeFile("index.html", s)
 }
 
