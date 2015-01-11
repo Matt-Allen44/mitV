@@ -1,41 +1,121 @@
 package main
 
 import (
-	//"fmt"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http"
+	"os"
+	"strings"
+	"time"
 )
 
 func main() {
-	s := (getTableHeader())
+	for true {
+		update()
 
-	s += formatRow(true, "123456789", "yourCompany/yourProduct", "1:23:45 1/2/34", "yourEmployee", "fixed a generic thing because it caused a generic issue and posted a generic error")
+		time.Sleep(time.Second * 15)
+	}
+}
+
+func update() {
+	fmt.Println("tick")
+
+	oauth := string(os.Args[1])
+	repo := string(os.Args[2])
+	wordLimit := 65
+
+	repo = strings.Replace(repo, "]", "", -1)
+
+	fmt.Println("Starting w/ ", oauth, " @ ", "https://api.github.com/repos/"+repo+"/commits")
+
+	s := (getTableHeader(repo))
+
+	page := httpGetPageAuth("https://api.github.com/repos/"+repo+"/commits", oauth, false)
+	commitJSON := make(GITHUB_COMMITS, 1000)
+
+	_ = json.Unmarshal([]byte(page), &commitJSON)
+
+	for i := range commitJSON {
+
+		id := commitJSON[i].Commit.Tree.Sha
+		id = id[:3]
+
+		comment := commitJSON[i].Commit.Message
+
+		if len(comment) > wordLimit {
+			comment = comment[:wordLimit] + "..."
+		}
+
+		s += formatRow(i%2 == 0, strings.ToUpper(string(id)), strings.ToUpper(strings.Split(repo, "/")[1]), commitJSON[i].Commit.Committer.Date, commitJSON[i].Commit.Committer.Name, comment, commitJSON[i].HtmlUrl)
+		//	fmt.Println(commitJSON[i].Commit.Message)
+	}
 
 	s += (getTableFooter())
-
-	writeFile("test.html", s)
+	writeFile("index.html", s)
 }
 
 func writeFile(name string, contents string) {
+	fmt.Println("Writing to file: ", name)
 	_ = ioutil.WriteFile(name, []byte(contents), 0644)
 }
 
 //var colourOdd string =
 //var colourEven string =
 
-func getTableHeader() string {
-	return `<style type="text/css">
+func getTableHeader(repo string) string {
+
+	rowPadding := "8"
+	headPadding := "2"
+
+	colOdd := "#000000"
+	colEven := "#191919"
+	colBg := "#191919"
+	colHead := "#000000"
+	colText := "#ffffff"
+	sizeHeader := "100%"
+
+	return `<html> <center> <title>mitV - ` + repo + `</title> 
+<body bgcolor = "` + colBg + `">
+
+<h1 style="font-weight:normal;color:` + colText + `;background-color:` + colBg + `;letter-spacing:1pt;word-spacing:2pt;font-size:` + sizeHeader + `;text-align:center;font-family:lucida sans unicode, lucida grande, sans-serif;line-height:1;
+"> WATCHING COMMITS FOR ` + repo + ` </h1>
+
+<style>
+/* unvisited link */
+a:link {
+    color: #ffffff;
+}
+
+/* visited link */
+a:visited {
+    color: #ffffff;
+}
+
+/* mouse over link */
+a:hover {
+    color: #ffffff;
+}
+
+/* selected link */
+a:active {
+    color: #ffffff;
+}
+</style>
+
+<style type="text/css">
 	.tg  {border-collapse:collapse;border-spacing:0;}
-	.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 20px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
-	.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 20px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
-	.tg .tg-li8k{font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif !important;;background-color:#1A1A1A;color:#ffffff}
+	.tg td{font-family:Arial, sans-serif;font-size:14px;padding:` + rowPadding + `px 20px;;overflow:hidden;word-break:normal;}
+	.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:` + headPadding + `px 20px;overflow:hidden;word-break:normal;}
+	.tg .tg-li8k{font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif !important;;background-color:` + colHead + `;color:` + colText + `}
 	
 
-	.tg .tg-yrsx{background-color:#313131;color:#ffffff}
-	.tg .tg-uimw{background-color:#1A1A1A;color:#ffffff}
+	.tg .tg-yrsx{background-color:` + colOdd + `;color:` + colText + `}
+	.tg .tg-uimw{background-color:` + colHead + `;color:` + colText + `}
 
 
-	.tg .tg-zh8g{background-color:#575757;color:#ffffff}
-	.tg .tg-u7t1{background-color:#1A1A1A;color:#efefef}
+	.tg .tg-zh8g{background-color:` + colEven + `;color:` + colText + `}
+	.tg .tg-u7t1{background-color:` + colHead + `;color:` + colText + `}
 	</style>
 	<table class="tg">
 	  <tr>
@@ -49,7 +129,7 @@ func getTableHeader() string {
 
 }
 
-func formatRow(even bool, changeId string, product string, time string, developer string, description string) string {
+func formatRow(even bool, changeId string, product string, time string, developer string, description string, url string) string {
 	s := "	<tr>"
 
 	class := ""
@@ -59,11 +139,11 @@ func formatRow(even bool, changeId string, product string, time string, develope
 		class = "tg-zh8g"
 	}
 
-	s += "<td class=\"" + class + "\">" + changeId + "</td>"
+	s += "<td class=\"" + class + "\"> <a href=\"" + url + "\">" + changeId + "</a></td>"
 	s += "<td class=\"" + class + "\">" + product + "</td>"
 	s += "<td class=\"" + class + "\">" + time + "</td>"
 	s += "<td class=\"" + class + "\">" + developer + "</td>"
-	s += "<td class=\"" + class + "\"; width=\"100%\">" + description + "</td>"
+	s += "<td class=\"" + class + "\"; width=\"50%\">" + description + "</td>"
 
 	s += "</tr>"
 	return s
@@ -71,4 +151,106 @@ func formatRow(even bool, changeId string, product string, time string, develope
 
 func getTableFooter() string {
 	return "</table>"
+}
+
+var oauth string = ""
+
+func httpGetPageAuth(url string, oauth string, verbose bool) string {
+	if url == "" {
+		return ""
+	}
+
+	httpReq, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		return "ERROR"
+	}
+
+	httpReq.SetBasicAuth(oauth, "x-oauth-basic")
+	httpClient := http.Client{}
+
+	httpRes, _ := httpClient.Do(httpReq)
+
+	verbose = true
+	if verbose {
+		fmt.Println("[HTTP CONNECTION] Connected to ", url, " recieved ", httpRes.Status)
+	}
+
+	page, err := ioutil.ReadAll(httpRes.Body)
+	if err != nil {
+		return "ERROR"
+	}
+
+	return (string(page))
+}
+
+//--------------------------------------------------------------------------------------//
+
+type GITHUB_COMMITS []struct {
+	Sha    string `json:"sha"`
+	Commit struct {
+		Author struct {
+			Name  string `json:"name"`
+			Email string `json:"email"`
+			Date  string `json:"date"`
+		} `json:"author"`
+		Committer struct {
+			Name  string `json:"name"`
+			Email string `json:"email"`
+			Date  string `json:"date"`
+		} `json:"committer"`
+		Message string `json:"message"`
+		Tree    struct {
+			Sha string `json:"sha"`
+			Url string `json:"url"`
+		} `json:"tree"`
+		Url          string `json:"url"`
+		CommentCount int    `json:"comment_count"`
+	} `json:"commit"`
+	Url         string `json:"url"`
+	HtmlUrl     string `json:"html_url"`
+	CommentsUrl string `json:"comments_url"`
+	Author      struct {
+		Login             string `json:"login"`
+		Id                int    `json:"id"`
+		AvatarUrl         string `json:"avatar_url"`
+		GravatarId        string `json:"gravatar_id"`
+		Url               string `json:"url"`
+		HtmlUrl           string `json:"html_url"`
+		FollowersUrl      string `json:"followers_url"`
+		FollowingUrl      string `json:"following_url"`
+		GistsUrl          string `json:"gists_url"`
+		StarredUrl        string `json:"starred_url"`
+		SubscriptionsUrl  string `json:"subscriptions_url"`
+		OrganizationsUrl  string `json:"organizations_url"`
+		ReposUrl          string `json:"repos_url"`
+		EventsUrl         string `json:"events_url"`
+		ReceivedEventsUrl string `json:"received_events_url"`
+		Type              string `json:"type"`
+		SiteAdmin         bool   `json:"site_admin"`
+	} `json:"author"`
+	Committer struct {
+		Login             string `json:"login"`
+		Id                int    `json:"id"`
+		AvatarUrl         string `json:"avatar_url"`
+		GravatarId        string `json:"gravatar_id"`
+		Url               string `json:"url"`
+		HtmlUrl           string `json:"html_url"`
+		FollowersUrl      string `json:"followers_url"`
+		FollowingUrl      string `json:"following_url"`
+		GistsUrl          string `json:"gists_url"`
+		StarredUrl        string `json:"starred_url"`
+		SubscriptionsUrl  string `json:"subscriptions_url"`
+		OrganizationsUrl  string `json:"organizations_url"`
+		ReposUrl          string `json:"repos_url"`
+		EventsUrl         string `json:"events_url"`
+		ReceivedEventsUrl string `json:"received_events_url"`
+		Type              string `json:"type"`
+		SiteAdmin         bool   `json:"site_admin"`
+	} `json:"committer"`
+	Parents []struct {
+		Sha     string `json:"sha"`
+		Url     string `json:"url"`
+		HtmlUrl string `json:"html_url"`
+	} `json:"parents"`
 }
