@@ -48,7 +48,7 @@ func update() {
 	s := (getTableHeader(repo))
 
 	page := httpGetPageAuth("https://api.github.com/repos/"+repo+"/commits", oauth, false)
-	commitJSON := make(GITHUB_COMMITS, 1000)
+	commitJSON := make(GITHUB_COMMITS, 30)
 
 	_ = json.Unmarshal([]byte(page), &commitJSON)
 
