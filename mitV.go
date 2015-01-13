@@ -7,13 +7,14 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"strconv"
 	"time"
 )
 
 func main() {
 	tickTime := 0
 	if len(os.Args) == 5 {
-		tickTime = os.Args[4]
+		tickTime, _ = strconv.Atoi(os.Args[4])
 	} else {
 		fmt.Println("Incorrect args - check usage - go run MITV OAUTH_KEY REPO(/AUTHOR/NAME) HOST REFRESH_TIME (SECOND)")
 		os.Exit(1)
@@ -24,7 +25,7 @@ func main() {
 	for true {
 		update()
 
-		time.Sleep(tickTime * time.SECOND)
+			time.Sleep(time.Duration(tickTime) * time.Second)
 	}
 }
 
