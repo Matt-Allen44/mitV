@@ -11,9 +11,11 @@ import (
 )
 
 func main() {
-	if len(os.Args) == 4 {
+	tickTime := 0
+	if len(os.Args) == 5 {
+		tickTime = os.args[4]
 	} else {
-		fmt.Println("Incorrect args - check usage - go run MITV OAUTH_KEY REPO(/AUTHOR/NAME) HOST")
+		fmt.Println("Incorrect args - check usage - go run MITV OAUTH_KEY REPO(/AUTHOR/NAME) HOST REFRESH_TIME (SECOND)")
 		os.Exit(1)
 	}
 
@@ -22,7 +24,7 @@ func main() {
 	for true {
 		update()
 
-		time.Sleep(time.Second * 15)
+		time.Sleep(tickTime * time.SECOND)
 	}
 }
 
