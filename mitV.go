@@ -13,7 +13,7 @@ import (
 func main() {
 	tickTime := 0
 	if len(os.Args) == 5 {
-		tickTime = os.args[4]
+		tickTime = os.Args[4]
 	} else {
 		fmt.Println("Incorrect args - check usage - go run MITV OAUTH_KEY REPO(/AUTHOR/NAME) HOST REFRESH_TIME (SECOND)")
 		os.Exit(1)
