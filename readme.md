@@ -13,7 +13,11 @@ $ go build mitV.go
 
 #Running
 ```
-$ mitV.exe <GithubOauthToken> <repo in format (author/repo)> <host (ip:port>
+$ mitV.exe <GithubOauthToken> <repo in format (author/repo)> <host (ip:port>> <update interval (seconds)>
+
+eg.
+$ mitV.exe <token> Matt-Allen44/mitV 127.0.0.1:8080 10
+  This would launch a server watching commits to this repo, and host it on localhost:8080, updating commits every 10 seconds!
 ```
 
 ```
