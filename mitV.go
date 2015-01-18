@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -25,7 +25,7 @@ func main() {
 	for true {
 		update()
 
-			time.Sleep(time.Duration(tickTime) * time.Second)
+		time.Sleep(time.Duration(tickTime) * time.Second)
 	}
 }
 
@@ -37,6 +37,7 @@ func launchServer() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[REQUEST] Connection from ", r.URL, " - ", r.RemoteAddr)
 	fmt.Fprintf(w, pageContent)
 }
 
@@ -48,7 +49,7 @@ func update() {
 
 	repo = strings.Replace(repo, "]", "", -1)
 
-	s := (getTableHeader(repo))
+	s := (getTableHeader(repo, os.Args[4]))
 
 	page := httpGetPageAuth("https://api.github.com/repos/"+repo+"/commits", oauth, false)
 	commitJSON := make(GITHUB_COMMITS, 30)
@@ -83,7 +84,7 @@ func writeFile(name string, contents string) {
 //var colourOdd string =
 //var colourEven string =
 
-func getTableHeader(repo string) string {
+func getTableHeader(repo string, tickTime string) string {
 
 	rowPadding := "8"
 	headPadding := "2"
@@ -103,7 +104,7 @@ func getTableHeader(repo string) string {
 		"> WATCHING COMMITS FOR ` + strings.ToUpper(repo) + ` </h1>`
 	}
 
-	return `<div class="page-wrap"> <html> <center> <title>mitV - ` + repo + `</title> 
+	return `<head> <meta http-equiv="refresh" content=` + tickTime + `> </head> <div class="page-wrap"> <html> <center> <title>mitV - ` + repo + `</title> 
 	<body bgcolor = "` + colBg + `">
 
 	<style>
