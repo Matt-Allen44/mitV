@@ -21,8 +21,7 @@ $ mitV.exe <token> Matt-Allen44/mitV 127.0.0.1:8080 10
 ```
 
 ```
-MitV will host a page as shown in the screenshot below, this is a static webpage produced by 
-MitV, the page is static - to update your view, refresh the page!
+MitV will host a page as shown in the screenshot below, this page will automatically refresh at the same rate as the server, eg. if the update interval is set to 10 seconds, the page will update every 10 seconds!
 ```
 
 
