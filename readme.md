@@ -1,5 +1,5 @@
 #MitV
-Lightweight WebApp used to view Commits to a Github Repository in Realtime!
+WebApp used to view Commits to a Github Repository in Realtime!
 Developed using GO and the GITHUB API
 
 #Contributing
